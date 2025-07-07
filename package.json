@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) experiment which integrates [The Cocktail DB API service](https://www.thecocktaildb.com/api.php).",
   "main": "index.js",
+  "bin": {
+    "weather": "./build/index.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && chmod 755 build/index.js"
   },
   "repository": {
     "type": "git",
@@ -13,9 +16,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/ikenley/mcp-cocktail/issues"
   },
-  "homepage": "https://github.com/ikenley/mcp-cocktail#readme"
+  "homepage": "https://github.com/ikenley/mcp-cocktail#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.15.0",
+    "zod": "^3.25.75"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "typescript": "^5.8.3"
+  }
 }
