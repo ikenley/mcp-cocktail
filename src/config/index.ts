@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 // Set the NODE_ENV to 'development' by default
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: ".env", quiet: true });
 
 export type AppEnv = "local" | "test" | "dev" | "staging" | "prod";
 

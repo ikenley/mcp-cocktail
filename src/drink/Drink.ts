@@ -74,6 +74,6 @@ export default class Drink implements DrinkType {
   public formatIngredients(): string {
     return this.ingredients
       .map((ing) => `${ing.measure} ${ing.ingredient}`)
-      .join("\n\t");
+      .join("\n");
   }
 }

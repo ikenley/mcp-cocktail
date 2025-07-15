@@ -2,17 +2,17 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 //import { z } from "zod";
 import { getConfigOptions } from "./config/index.js";
-import { RawDrink, DrinkResponse } from "./types/index.js";
+import { DrinkResponse } from "./types/index.js";
 import Drink from "./drink/Drink.js";
+import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
-const NWS_API_BASE = "https://api.weather.gov";
-const USER_AGENT = "weather-app/1.0";
+const USER_AGENT = "cocktail-app/1.0";
 
 const config = getConfigOptions();
 
 // Create server instance
 const server = new McpServer({
-  name: "weather",
+  name: "cocktail",
   version: "1.0.0",
   capabilities: {
     resources: {},
@@ -47,49 +47,54 @@ function formatDrink(drink: Drink): string {
     `Name: ${drink.name}`,
     `Category: ${drink.category}`,
     `Glass: ${drink.glass}`,
-    `Ingredients: \n\t${formattedIngredients}`,
+    `Ingredients: \n${formattedIngredients}`,
     `Instructions: ${drink.instructions}`,
     "---",
   ].join("\n");
 }
+
+const getRandomCocktail = async (): Promise<CallToolResult> => {
+  const url = `https://www.thecocktaildb.com/api/json/v2/${config.cocktailDbApiKey}/random.php`;
+  //console.log(`url=${url}`);
+  const drinkResponse = await makeDrinkRequest<DrinkResponse>(url);
+  //console.log(`drinkResponse=${JSON.stringify(drinkResponse)}`);
+
+  if (
+    !drinkResponse ||
+    !drinkResponse.drinks ||
+    drinkResponse.drinks.length < 1
+  ) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: "Failed to retrieve drinks data",
+        },
+      ],
+    };
+  }
+
+  const drink = new Drink(drinkResponse.drinks[0]);
+
+  const responseText = formatDrink(drink);
+  //console.log(`responseText=${responseText}`);
+
+  return {
+    content: [
+      {
+        type: "text",
+        text: responseText,
+      },
+    ],
+  };
+};
 
 // Register weather tools
 server.tool(
   "get-random-cocktail",
   "Get random cocktail recommendation",
   {},
-  async () => {
-    const url = `https://www.thecocktaildb.com/api/json/v2/${config.cocktailDbApiKey}/random.php`;
-    const drinkResponse = await makeDrinkRequest<DrinkResponse>(url);
-
-    if (
-      !drinkResponse ||
-      !drinkResponse.drinks ||
-      drinkResponse.drinks.length < 1
-    ) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Failed to retrieve drinks data",
-          },
-        ],
-      };
-    }
-
-    const drink = new Drink(drinkResponse.drinks[0]);
-
-    const responseText = formatDrink(drink);
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: responseText,
-        },
-      ],
-    };
-  }
+  getRandomCocktail
 );
 
 async function main() {
@@ -97,6 +102,8 @@ async function main() {
   await server.connect(transport);
   console.error("MCP Server running on stdio");
 }
+
+//getRandomCocktail();
 
 main().catch((error) => {
   console.error("Fatal error in main():", error);
