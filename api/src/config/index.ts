@@ -68,7 +68,7 @@ export const getConfigOptions = () => {
     // },
     logs: { level: process.env.LOGS__LEVEL || "http" },
     nodeEnv: process.env.NODE_ENV!,
-    port: parseInt(process.env.PORT || "8086", 10),
+    port: parseInt(process.env.PORT || "8092", 10),
   };
 
   return config;

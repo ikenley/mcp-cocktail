@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { Router } from "express";
-import AiController from "../components/ai/AiController";
+import AiController from "../components/drink/DrinkController";
 import StatusController from "../components/status/StatusController";
 
 @injectable()

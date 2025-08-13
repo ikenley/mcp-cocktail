@@ -6,7 +6,7 @@ import LoggerProvider from "../../utils/LoggerProvider";
 import OpenAI from "openai";
 
 @injectable()
-export default class AiService {
+export default class DrinkService {
   private logger: winston.Logger;
 
   constructor(
@@ -14,7 +14,7 @@ export default class AiService {
     protected config: ConfigOptions,
     protected openai: OpenAI
   ) {
-    this.logger = loggerProvider.provide("AiService");
+    this.logger = loggerProvider.provide("DrinkService");
   }
 
   public async createPun(params: CreatePunParams) {
