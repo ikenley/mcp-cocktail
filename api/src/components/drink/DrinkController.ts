@@ -1,6 +1,5 @@
 import { DependencyContainer, injectable } from "tsyringe";
-import { Request, Response, Router } from "express";
-import { CreatePunParams } from "../../types";
+import { Response, Router } from "express";
 import { ConfigOptions } from "../../config";
 //import AuthenticationMiddlewareProvider from "../../auth/AuthenticationMiddlewareProvider";
 import DrinkService from "./DrinkService";
@@ -8,13 +7,13 @@ import DrinkService from "./DrinkService";
 const route = Router();
 
 @injectable()
-export default class AiController {
+export default class DrinkController {
   constructor(
     protected config: ConfigOptions //protected authenticationMiddlewareProvider: AuthenticationMiddlewareProvider
   ) {}
 
   public registerRoutes(app: Router) {
-    app.use("/ai", route);
+    app.use("/drink", route);
 
     //route.use(this.authenticationMiddlewareProvider.provide());
 
@@ -23,9 +22,9 @@ export default class AiController {
       return container.resolve(DrinkService);
     };
 
-    route.post("/pun", async (req: Request<{}, {}, CreatePunParams>, res) => {
+    route.get("/random", async (_req, res) => {
       const service = getService(res);
-      const result = await service.createPun(req.body);
+      const result = await service.getRandomCocktail();
       res.send(result);
     });
   }

@@ -25,15 +25,7 @@
     "url": "https://github.com/ikenley/ai-app"
   },
   "dependencies": {
-    "@aws-sdk/client-bedrock-agent-runtime": "^3.864.0",
-    "@aws-sdk/client-bedrock-runtime": "^3.864.0",
-    "@aws-sdk/client-dynamodb": "^3.864.0",
-    "@aws-sdk/client-s3": "^3.864.0",
-    "@aws-sdk/client-ses": "^3.864.0",
-    "@aws-sdk/client-sfn": "^3.864.0",
-    "@aws-sdk/client-sqs": "^3.864.0",
     "@aws-sdk/client-ssm": "^3.864.0",
-    "@aws-sdk/lib-storage": "^3.864.0",
     "@vendia/serverless-express": "^4.12.6",
     "aws-jwt-verify": "^5.1.0",
     "cors": "^2.8.5",
@@ -42,7 +34,6 @@
     "helmet": "^8.1.0",
     "method-override": "^3.0.0",
     "morgan": "^1.10.1",
-    "openai": "^4.104.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0",
     "uuid": "^11.1.0",
