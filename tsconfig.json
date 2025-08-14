@@ -10,6 +10,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "api/src/components/drink/Drink.ts"],
+  "include": [
+    "src/**/*",
+    "api/src/components/drink/Drink.ts",
+    "api/src/mcp/McpError.ts"
+  ],
   "exclude": ["node_modules"]
 }
