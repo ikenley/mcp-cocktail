@@ -4,7 +4,9 @@ import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { ConfigOptions, getConfigOptions } from "../config";
 import LoggerInstance, { LoggerToken } from "./logger";
 import { CognitoJwtVerifierToken } from "../types";
-import { RequestIdToken } from "../middleware/dependencyInjectionMiddleware";
+import DependencyInjectionMiddlewareProvider, {
+  RequestIdToken,
+} from "../middleware/DependencyInjectionMiddlewareProvider";
 
 export default () => {
   try {
@@ -12,6 +14,11 @@ export default () => {
     container.register(ConfigOptions, { useValue: config });
 
     container.register(LoggerToken, { useValue: LoggerInstance });
+
+    // Configure request-level middleware provider
+    container.register(DependencyInjectionMiddlewareProvider, {
+      useFactory: (c) => new DependencyInjectionMiddlewareProvider(c),
+    });
 
     // Register default request Id.
     // This will be replaced by request-level dependency container in most cases

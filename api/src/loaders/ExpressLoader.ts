@@ -5,7 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import logger from "./logger";
 import { ConfigOptions, getConfigOptions } from "../config";
-import dependencyInjectionMiddleware from "../middleware/dependencyInjectionMiddleware";
+import DependencyInjectionMiddlewareProvider from "../middleware/DependencyInjectionMiddlewareProvider";
 import exceptionMiddleware from "../middleware/exceptionMiddleware";
 import RouteService from "../routes/RouteService";
 
@@ -21,7 +21,10 @@ const getCorsOrigin = (config: ConfigOptions) => {
 
 @injectable()
 export default class ExpressLoader {
-  constructor(protected routeService: RouteService) {}
+  constructor(
+    protected routeService: RouteService,
+    protected diMiddlewareProvider: DependencyInjectionMiddlewareProvider
+  ) {}
 
   public load(app: express.Application) {
     const config = getConfigOptions();
@@ -54,7 +57,7 @@ export default class ExpressLoader {
     );
 
     // Load API routes
-    app.use(config.api.prefix, dependencyInjectionMiddleware);
+    app.use(config.api.prefix, this.diMiddlewareProvider.provide());
     app.use(config.api.prefix, this.routeService.registerRoutes());
 
     /// catch 404 and forward to error handler

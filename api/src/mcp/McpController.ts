@@ -1,4 +1,4 @@
-import { DependencyContainer, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { Response, Router, Request } from "express";
 import { randomUUID } from "node:crypto";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
@@ -7,6 +7,7 @@ import { ConfigOptions } from "../config";
 import LoggerProvider from "src/utils/LoggerProvider";
 import winston from "winston";
 import McpError from "./McpError";
+import McpServerProvider from "./McpServerProvider";
 //import AuthenticationMiddlewareProvider from "../../auth/AuthenticationMiddlewareProvider";
 
 const MCP_PATH = "/mcp";
@@ -16,7 +17,7 @@ const route = Router();
 
 const transports = new Map<string, StreamableHTTPServerTransport>();
 
-/** Configure MCP
+/** Configure MCP HTTP requests
  * Based on https://github.com/aws-samples/sample-serverless-mcp-servers/tree/main/stateful-mcp-on-ecs-nodejs
  */
 @injectable()
@@ -25,7 +26,8 @@ export default class McpController {
 
   constructor(
     protected config: ConfigOptions,
-    protected loggerProvider: LoggerProvider
+    protected loggerProvider: LoggerProvider,
+    protected mcpServerProvider: McpServerProvider
   ) {
     this.logger = loggerProvider.provide("DrinkService");
   }
@@ -59,9 +61,10 @@ export default class McpController {
       // New initialization request
       // Create new instances of MCP Server and Transport
       this.logger.info(`creating new MCP Server and Transport`);
-      const newMcpServer = mcpServer.create();
+      const nextSessionId = randomUUID();
+      const newMcpServer = await this.mcpServerProvider.create(nextSessionId);
       transport = new StreamableHTTPServerTransport({
-        sessionIdGenerator: () => randomUUID(),
+        sessionIdGenerator: () => nextSessionId,
         onsessioninitialized: (sessionId) => {
           this.logger.info(`session initialized for sessionid=${sessionId}`);
           if (transport) {

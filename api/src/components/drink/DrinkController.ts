@@ -3,6 +3,7 @@ import { Response, Router } from "express";
 import { ConfigOptions } from "../../config";
 //import AuthenticationMiddlewareProvider from "../../auth/AuthenticationMiddlewareProvider";
 import DrinkService from "./DrinkService";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 
 const route = Router();
 
@@ -27,5 +28,30 @@ export default class DrinkController {
       const result = await service.getRandomCocktail();
       res.send(result);
     });
+  }
+
+  /** Register MCP server tools, resources, and prompts */
+  public registerMcp(server: McpServer, container: DependencyContainer) {
+    const getService = () => {
+      return container.resolve(DrinkService);
+    };
+
+    server.tool(
+      "get-random-cocktail",
+      "Get random cocktail recommendation",
+      {},
+      async () => {
+        const service = getService();
+        const cocktail = await service.getRandomCocktail();
+        return {
+          content: [
+            {
+              type: "text",
+              text: cocktail,
+            },
+          ],
+        };
+      }
+    );
   }
 }

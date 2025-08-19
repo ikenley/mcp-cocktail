@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import winston from "winston";
 import { LoggerToken } from "../loaders/logger";
-import { RequestIdToken } from "../middleware/dependencyInjectionMiddleware";
+import { RequestIdToken } from "../middleware/DependencyInjectionMiddlewareProvider";
 
 /** Provides a module-specific Logger instance.
  * Includes additional container-provides context values
