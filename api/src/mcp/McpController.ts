@@ -4,13 +4,13 @@ import { randomUUID } from "node:crypto";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { ConfigOptions } from "../config";
-import LoggerProvider from "src/utils/LoggerProvider";
+import LoggerProvider from "../utils/LoggerProvider";
 import winston from "winston";
 import McpError from "./McpError";
 import McpServerProvider from "./McpServerProvider";
 //import AuthenticationMiddlewareProvider from "../../auth/AuthenticationMiddlewareProvider";
 
-const MCP_PATH = "/mcp";
+const MCP_PATH = "";
 const MCP_SESSION_ID_HEADER = "mcp-session-id";
 
 const route = Router();
@@ -42,9 +42,9 @@ export default class McpController {
     //   return container.resolve(DrinkService);
     // };
 
-    route.post(MCP_PATH, this.postRequestHandler);
-    route.get(MCP_PATH, this.sessionRequestHandler);
-    route.delete(MCP_PATH, this.sessionRequestHandler);
+    route.post(MCP_PATH, this.postRequestHandler.bind(this));
+    route.get(MCP_PATH, this.sessionRequestHandler.bind(this));
+    route.delete(MCP_PATH, this.sessionRequestHandler.bind(this));
   }
 
   private async postRequestHandler(req: Request, res: Response) {

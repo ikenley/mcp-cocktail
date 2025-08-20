@@ -7,6 +7,7 @@ import { CognitoJwtVerifierToken } from "../types";
 import DependencyInjectionMiddlewareProvider, {
   RequestIdToken,
 } from "../middleware/DependencyInjectionMiddlewareProvider";
+import SessionDiContainerProvider from "../mcp/SessionDiContainerProvider";
 
 export default () => {
   try {
@@ -18,6 +19,9 @@ export default () => {
     // Configure request-level middleware provider
     container.register(DependencyInjectionMiddlewareProvider, {
       useFactory: (c) => new DependencyInjectionMiddlewareProvider(c),
+    });
+    container.register(SessionDiContainerProvider, {
+      useFactory: (c) => new SessionDiContainerProvider(c),
     });
 
     // Register default request Id.
