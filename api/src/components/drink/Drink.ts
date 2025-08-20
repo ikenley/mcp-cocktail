@@ -1,4 +1,4 @@
-import { DrinkType, IngredientWithMeasure, RawDrink } from "../types/index.js";
+import { DrinkType, IngredientWithMeasure, RawDrink } from "../../types";
 
 export default class Drink implements DrinkType {
   id: string;

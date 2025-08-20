@@ -1,3 +1,5 @@
+export const CognitoJwtVerifierToken = "CognitoJwtVerifier";
+
 /** A cocktail in the "raw" format provided by
  * https://www.thecocktaildb.com/api.php
  */
