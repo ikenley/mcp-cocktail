@@ -1,5 +1,5 @@
 {
-  "name": "ai-app",
+  "name": "cocktail-app",
   "version": "1.0.0",
   "description": "Boilerplate for Typescript Node application",
   "main": "src/index.ts",

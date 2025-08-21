@@ -36,10 +36,9 @@ phases:
       - echo "Deploying the API layer lambda function"
       - echo Pushing the Docker image...
       - docker push $LAMBDA_REPOSITORY_URL:$IMAGE_TAG
-      - docker push $API_REPOSITORY_URL:$IMAGE_TAG
+      #- docker push $API_REPOSITORY_URL:$IMAGE_TAG
       - echo "Updating lambda function image_uri..."
       - aws lambda update-function-code --no-paginate --function-name $API_FUNCTION_NAME --image-uri $LAMBDA_IMAGE_URI
-      - aws lambda update-function-code --no-paginate --function-name $JOB_RUNNER_FUNCTION_NAME --image-uri $LAMBDA_IMAGE_URI
       # - echo "Deploying the frontend static S3 site..."
       # - aws s3 rm s3://${SITE_S3_BUCKET_NAME}/${SITE_S3_KEY_PREFIX} --recursive
       # - aws s3 cp ./build/ s3://${SITE_S3_BUCKET_NAME}/${SITE_S3_KEY_PREFIX} --recursive
