@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.864.0",
+    "@modelcontextprotocol/sdk": "^1.17.3",
     "@vendia/serverless-express": "^4.12.6",
     "aws-jwt-verify": "^5.1.0",
     "cors": "^2.8.5",

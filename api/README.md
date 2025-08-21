@@ -18,9 +18,10 @@ npm run start
 This project can be run as a Lambda function behind an Application Load Balancer to save money.
 
 Example commands below taken from [Deploy Node.js Lambda functions with container images](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html):
+
 ```
-# Build the Docker image 
-docker build -t ik-dev-ai-lambda-test:test -f Dockerfile-lambda --build-arg VERSION=TEST .
+# Build the Docker image
+docker build -t ik-dev-cocktail-lambda-test:test -f Dockerfile-lambda --build-arg VERSION=TEST .
 
 # Start the Docker image with the docker run command.
 docker run -p 9000:8080 ik-dev-ai-lambda-test:test
@@ -50,5 +51,3 @@ docker tag typescript-node-boilerplate:latest typescript-node-boilerplate:1.0.0
 ```
 
 ---
-
-
