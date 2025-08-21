@@ -10,10 +10,10 @@ import McpError from "./McpError";
 import McpServerProvider from "./McpServerProvider";
 //import AuthenticationMiddlewareProvider from "../../auth/AuthenticationMiddlewareProvider";
 
-const MCP_PATH = "";
+const MCP_PATH = "/mcp";
 const MCP_SESSION_ID_HEADER = "mcp-session-id";
 
-const route = Router();
+//const route = Router();
 
 const transports = new Map<string, StreamableHTTPServerTransport>();
 
@@ -33,7 +33,7 @@ export default class McpController {
   }
 
   public registerRoutes(app: Router) {
-    app.use("/mcp", route);
+    //app.use("/mcp", route);
 
     //route.use(this.authenticationMiddlewareProvider.provide());
 
@@ -42,9 +42,9 @@ export default class McpController {
     //   return container.resolve(DrinkService);
     // };
 
-    route.post(MCP_PATH, this.postRequestHandler.bind(this));
-    route.get(MCP_PATH, this.sessionRequestHandler.bind(this));
-    route.delete(MCP_PATH, this.sessionRequestHandler.bind(this));
+    app.post(MCP_PATH, this.postRequestHandler.bind(this));
+    app.get(MCP_PATH, this.sessionRequestHandler.bind(this));
+    app.delete(MCP_PATH, this.sessionRequestHandler.bind(this));
   }
 
   private async postRequestHandler(req: Request, res: Response) {
