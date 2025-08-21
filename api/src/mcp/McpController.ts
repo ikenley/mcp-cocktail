@@ -29,7 +29,7 @@ export default class McpController {
     protected loggerProvider: LoggerProvider,
     protected mcpServerProvider: McpServerProvider
   ) {
-    this.logger = loggerProvider.provide("DrinkService");
+    this.logger = loggerProvider.provide("McpController");
   }
 
   public registerRoutes(app: Router) {

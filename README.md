@@ -19,3 +19,11 @@ npm run build
 ## Notes
 
 For the MCP client, if you would like to run Claude Desktop on Linux, consider using [claude-desktop-debian](https://github.com/aaddrick/claude-desktop-debian).
+
+---
+
+## References
+
+- https://github.com/modelcontextprotocol/typescript-sdk
+- https://github.com/aws-samples/sample-serverless-mcp-servers/tree/main/stateful-mcp-on-ecs-nodejs
+- https://modelcontextprotocol.io/docs/tutorials/use-remote-mcp-server
