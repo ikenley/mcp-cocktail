@@ -28,7 +28,9 @@ export default class McpTransportManager {
 
   /** Creates StreamableHTTPServerTransport
    */
-  public async createTransport(): Promise<TransportAndServer> {
+  public async createTransport(
+    traceId: string | null
+  ): Promise<TransportAndServer> {
     this.logger.info("createOrGetTransport:params");
 
     // Else create new Transport and MCPServer
@@ -36,7 +38,7 @@ export default class McpTransportManager {
     // Create new instances of MCP Server and Transport
     this.logger.info(`creating new MCP Server and Transport`);
 
-    const sessionId = randomUUID();
+    const sessionId = traceId || randomUUID();
     const server = await this.mcpServerProvider.create(sessionId);
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,

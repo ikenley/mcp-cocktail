@@ -9,6 +9,7 @@ import McpTransportManager from "./McpTransportManager";
 
 const MCP_PATH = "/mcp";
 //const MCP_SESSION_ID_HEADER = "mcp-session-id";
+const AMAZON_TRACE_ID_HEADER = "x-amzn-trace-id";
 
 /** Configure MCP HTTP requests
  * Based on https://github.com/aws-samples/sample-serverless-mcp-servers/tree/main/stateful-mcp-on-ecs-nodejs
@@ -33,11 +34,14 @@ export default class McpController {
 
   private async postRequestHandler(req: Request, res: Response) {
     this.logger.info("postRequestHandler");
+    const traceId = this.getTraceId(req);
 
-    const transportAndServer = await this.mcpTransportManager.createTransport();
+    const transportAndServer = await this.mcpTransportManager.createTransport(
+      traceId
+    );
     const { transport, server } = transportAndServer;
 
-    //
+    // Gracefully close transport and server when request ends
     res.on("close", () => {
       this.logger.info(`request processing complete`);
       transport.close();
@@ -64,7 +68,21 @@ export default class McpController {
     // await transport.handleRequest(req, res, req.body);
   }
 
-  /** Get session ID from header */
+  /** Get Amazon trace ID from header */
+  private getTraceId(req: Request): string | null {
+    const sessionIdHeader = req.headers[AMAZON_TRACE_ID_HEADER];
+
+    if (!sessionIdHeader) {
+      return null;
+    } else if (typeof sessionIdHeader === "string") {
+      return sessionIdHeader;
+    } else if (sessionIdHeader.length > 0) {
+      return sessionIdHeader[0];
+    }
+
+    return null;
+  }
+
   // private getSessionId(req: Request): string | null {
   //   const sessionIdHeader = req.headers[MCP_SESSION_ID_HEADER];
 
