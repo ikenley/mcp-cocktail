@@ -1,6 +1,5 @@
 import { injectable } from "tsyringe";
 import { Response, Router, Request } from "express";
-import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { ConfigOptions } from "../config";
 import LoggerProvider from "../utils/LoggerProvider";
 import winston from "winston";
@@ -9,7 +8,7 @@ import McpTransportManager from "./McpTransportManager";
 //import AuthenticationMiddlewareProvider from "../../auth/AuthenticationMiddlewareProvider";
 
 const MCP_PATH = "/mcp";
-const MCP_SESSION_ID_HEADER = "mcp-session-id";
+//const MCP_SESSION_ID_HEADER = "mcp-session-id";
 
 /** Configure MCP HTTP requests
  * Based on https://github.com/aws-samples/sample-serverless-mcp-servers/tree/main/stateful-mcp-on-ecs-nodejs
@@ -48,7 +47,7 @@ export default class McpController {
     await transport.handleRequest(req, res, req.body);
   }
 
-  private async sessionRequestHandler(req: Request, res: Response) {
+  private async sessionRequestHandler(_req: Request, res: Response) {
     res.status(405).set("Allow", "POST").json(McpError.methodNotAllowed);
     // const sessionId = this.getSessionId(req);
 
