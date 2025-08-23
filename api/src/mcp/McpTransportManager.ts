@@ -4,8 +4,12 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import LoggerProvider from "../utils/LoggerProvider";
 import winston from "winston";
 import McpServerProvider from "./McpServerProvider";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 
-const transports = new Map<string, StreamableHTTPServerTransport>();
+type TransportAndServer = {
+  transport: StreamableHTTPServerTransport;
+  server: McpServer;
+};
 
 /** Manages the creations and retrieval of StreamableHTTPServerTransport.
  * This is a naive implementation. It stores Transports in memory and creates them if missing.
@@ -22,51 +26,40 @@ export default class McpTransportManager {
     this.logger = loggerProvider.provide("McpTransportManager");
   }
 
-  /** Gets StreamableHTTPServerTransport by session ID.
-   * It will fetch it from memory if it exists.
-   * Otherwise, it will create a new transport and MCP server.
+  /** Creates StreamableHTTPServerTransport
    */
-  public async createOrGetTransport(
-    sessionId: string | null
-  ): Promise<StreamableHTTPServerTransport> {
-    this.logger.info("createOrGetTransport:params", { sessionId });
-
-    // If transport exists, return it
-    const nextSessionId = sessionId ?? randomUUID();
-    let transport = transports.get(nextSessionId);
-    if (transport) {
-      this.logger.info(`Using existing transport`, { sessionId });
-      return transport;
-    }
+  public async createTransport(): Promise<TransportAndServer> {
+    this.logger.info("createOrGetTransport:params");
 
     // Else create new Transport and MCPServer
     // New initialization request
     // Create new instances of MCP Server and Transport
     this.logger.info(`creating new MCP Server and Transport`);
 
-    const newMcpServer = await this.mcpServerProvider.create(nextSessionId);
-    transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: () => nextSessionId,
-      onsessioninitialized: (sessionId) => {
-        this.logger.info(`Session initialized`, { sessionId });
-        if (transport) {
-          transports.set(sessionId, transport);
-        }
-      },
+    const sessionId = randomUUID();
+    const server = await this.mcpServerProvider.create(sessionId);
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+      // onsessioninitialized: (sessionId) => {
+      //   this.logger.info(`Session initialized`, { sessionId });
+      //   if (transport) {
+      //     transports.set(sessionId, transport);
+      //   }
+      // },
       // Uncomment if you want to disable SSE in responses
       // enableJsonResponse: true,
     });
 
-    transport.onclose = () => {
-      if (transport && transport.sessionId) {
-        this.logger.info(`Deleting transport`, { sessionId });
-        if (sessionId) {
-          transports.delete(sessionId);
-        }
-      }
-    };
+    // transport.onclose = () => {
+    //   if (transport && transport.sessionId) {
+    //     this.logger.info(`Deleting transport`, { sessionId });
+    //     if (sessionId) {
+    //       transports.delete(sessionId);
+    //     }
+    //   }
+    // };
 
-    await newMcpServer.connect(transport);
-    return transport;
+    await server.connect(transport);
+    return { transport, server };
   }
 }

@@ -33,52 +33,50 @@ export default class McpController {
   }
 
   private async postRequestHandler(req: Request, res: Response) {
-    const sessionId = this.getSessionId(req);
-    this.logger.info("postRequestHandler", { sessionId });
+    this.logger.info("postRequestHandler");
 
-    // If invalid request, return 404
-    if (!sessionId && !isInitializeRequest(req.body)) {
-      // Invalid request
-      this.logger.info(`Prodived invalid sessionId=${sessionId}`);
-      res.status(400).json(McpError.noValidSessionId);
-      return;
-    }
+    const transportAndServer = await this.mcpTransportManager.createTransport();
+    const { transport, server } = transportAndServer;
 
-    const transport = await this.mcpTransportManager.createOrGetTransport(
-      sessionId
-    );
+    //
+    res.on("close", () => {
+      this.logger.info(`request processing complete`);
+      transport.close();
+      server.close();
+    });
 
     await transport.handleRequest(req, res, req.body);
   }
 
   private async sessionRequestHandler(req: Request, res: Response) {
-    const sessionId = this.getSessionId(req);
+    res.status(405).set("Allow", "POST").json(McpError.methodNotAllowed);
+    // const sessionId = this.getSessionId(req);
 
-    this.logger.info(`sessionRequestHandler`, { sessionId });
-    if (!sessionId) {
-      res.status(404).json(McpError.invalidOrMissingSessionId);
-      return;
-    }
+    // this.logger.info(`sessionRequestHandler`, { sessionId });
+    // if (!sessionId) {
+    //   res.status(404).json(McpError.invalidOrMissingSessionId);
+    //   return;
+    // }
 
-    const transport = await this.mcpTransportManager.createOrGetTransport(
-      sessionId
-    );
+    // const transport = await this.mcpTransportManager.createOrGetTransport(
+    //   sessionId
+    // );
 
-    await transport.handleRequest(req, res, req.body);
+    // await transport.handleRequest(req, res, req.body);
   }
 
   /** Get session ID from header */
-  private getSessionId(req: Request): string | null {
-    const sessionIdHeader = req.headers[MCP_SESSION_ID_HEADER];
+  // private getSessionId(req: Request): string | null {
+  //   const sessionIdHeader = req.headers[MCP_SESSION_ID_HEADER];
 
-    if (!sessionIdHeader) {
-      return null;
-    } else if (typeof sessionIdHeader === "string") {
-      return sessionIdHeader;
-    } else if (sessionIdHeader.length > 0) {
-      return sessionIdHeader[0];
-    }
+  //   if (!sessionIdHeader) {
+  //     return null;
+  //   } else if (typeof sessionIdHeader === "string") {
+  //     return sessionIdHeader;
+  //   } else if (sessionIdHeader.length > 0) {
+  //     return sessionIdHeader[0];
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 }
