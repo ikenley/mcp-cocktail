@@ -8,7 +8,7 @@ import axios from "axios";
  * Based on https://github.com/empires-security/mcp-oauth2-aws-cognito
  */
 @injectable()
-export default class DrinkController {
+export default class AuthController {
   constructor(
     protected config: ConfigOptions,
     protected resourceMetadata: OAuthResourceMetadata
