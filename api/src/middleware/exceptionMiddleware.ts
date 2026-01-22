@@ -33,6 +33,18 @@ export const exceptionMiddleware = (
       errors: { errorId, message: isProduction ? defaultMessage : err.message },
     });
   }
+  // If 401 error, add OAuth WWW-Authenticate response headers
+  else if (status === 401) {
+    res
+      .status(401)
+      .set({
+        "WWW-Authenticate": `Bearer resource_metadata="${config.baseUrl}/.well-known/oauth-protected-resource", error="invalid_token", error_description="${err.message}"`,
+      })
+      .json({
+        error: "unauthorized",
+        error_description: err.message,
+      });
+  }
   // For non-500 errors, return message content
   else {
     res.status(status);

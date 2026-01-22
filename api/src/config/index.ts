@@ -15,6 +15,7 @@ export class ConfigOptions {
     region: string;
   };
   baseDomain: string | null;
+  baseUrl: string;
   cocktailDbApiKey: string;
   cognito: {
     userPoolId: string;
@@ -54,6 +55,7 @@ export const getConfigOptions = () => {
       region: process.env.AWS_REGION!,
     },
     baseDomain: process.env.BASE_DOMAIN || null,
+    baseUrl: process.env.BASE_URL!,
     cocktailDbApiKey: process.env.COCKTAILDB_API_KEY!,
     cognito: {
       userPoolId: process.env.COGNITO_USER_POOL_ID!,
